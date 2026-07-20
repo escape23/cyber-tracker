@@ -1,26 +1,99 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Cyber dark theme — slate base, neon emerald/cyan accents */
+  --background: #050810;
+  --foreground: #e2e8f0;
+  --card: #0a101f;
+  --card-foreground: #e2e8f0;
+  --popover: #0a101f;
+  --popover-foreground: #e2e8f0;
+  --primary: #34d399;
+  --primary-foreground: #022c22;
+  --secondary: #16202f;
+  --secondary-foreground: #cbd5e1;
+  --muted: #131c2e;
+  --muted-foreground: #7c8ba1;
+  --accent: #22d3ee;
+  --accent-foreground: #083344;
+  --destructive: #f87171;
+  --destructive-foreground: #450a0a;
+  --border: #1c2941;
+  --input: #1c2941;
+  --ring: #34d399;
+  --radius: 0.625rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Subtle blueprint grid backdrop */
+.cyber-grid {
+  background-image:
+    linear-gradient(to right, rgba(52, 211, 153, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(52, 211, 153, 0.04) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, black 40%, transparent 100%);
+}
+
+/* Neon glow helpers */
+.glow-emerald {
+  box-shadow: 0 0 24px rgba(52, 211, 153, 0.18);
+}
+.text-glow {
+  text-shadow: 0 0 18px rgba(52, 211, 153, 0.45);
+}
+
+::selection {
+  background: rgba(52, 211, 153, 0.3);
+}
+
+/* Slim styled scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #050810;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c2941;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2a3b5c;
 }
