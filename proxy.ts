@@ -23,10 +23,11 @@ export function proxy(request: NextRequest) {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${
       isDev ? " 'unsafe-eval' 'unsafe-inline'" : ""
     }`,
-    // 'unsafe-inline' is unavoidable for styles: React's style={{}} prop and
-    // Framer Motion both write inline style *attributes*, which nonces and
-    // hashes cannot cover. Deliberately scoped to styles only — script-src,
-    // which is what actually stops XSS execution, stays strict.
+    // 'unsafe-inline' is unavoidable for styles: React's style={{}} prop
+    // (e.g. the progress bar's computed width) writes an inline style
+    // *attribute*, which CSP nonces and hashes cannot cover. Deliberately
+    // scoped to styles only — script-src, which is what actually stops XSS
+    // execution, stays strict.
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' blob: data:",
     "font-src 'self'",

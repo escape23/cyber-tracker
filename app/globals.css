@@ -1,27 +1,45 @@
 @import "tailwindcss";
 
+/**
+ * Design tokens — minimal dark theme.
+ *
+ * Neutral zinc scale carries the entire UI; emerald is the ONLY chromatic
+ * colour and is reserved exclusively for progress/completion state, so it
+ * always means the same thing wherever it appears.
+ */
 :root {
-  /* Cyber dark theme — slate base, neon emerald/cyan accents */
-  --background: #050810;
-  --foreground: #e2e8f0;
-  --card: #0a101f;
-  --card-foreground: #e2e8f0;
-  --popover: #0a101f;
-  --popover-foreground: #e2e8f0;
-  --primary: #34d399;
-  --primary-foreground: #022c22;
-  --secondary: #16202f;
-  --secondary-foreground: #cbd5e1;
-  --muted: #131c2e;
-  --muted-foreground: #7c8ba1;
-  --accent: #22d3ee;
-  --accent-foreground: #083344;
-  --destructive: #f87171;
-  --destructive-foreground: #450a0a;
-  --border: #1c2941;
-  --input: #1c2941;
-  --ring: #34d399;
-  --radius: 0.625rem;
+  --background: #09090b;
+  --foreground: #fafafa;
+
+  --card: #0b0b0e;
+  --card-foreground: #fafafa;
+  --popover: #101013;
+  --popover-foreground: #fafafa;
+
+  /* Near-white primary: buttons read as neutral, not branded. */
+  --primary: #fafafa;
+  --primary-foreground: #09090b;
+
+  --secondary: #18181b;
+  --secondary-foreground: #e4e4e7;
+
+  --muted: #18181b;
+  --muted-foreground: #7d7d86;
+
+  --accent: #18181b;
+  --accent-foreground: #fafafa;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #3f3f46;
+
+  /* Single accent, progress states only. */
+  --progress: #10b981;
+
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -44,56 +62,77 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-progress: var(--progress);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-* {
-  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  /* Slightly tighter default tracking reads crisper at small sizes. */
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Subtle blueprint grid backdrop */
-.cyber-grid {
-  background-image:
-    linear-gradient(to right, rgba(52, 211, 153, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(52, 211, 153, 0.04) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: radial-gradient(ellipse 90% 65% at 50% 0%, black 40%, transparent 100%);
-}
-
-/* Neon glow helpers */
-.glow-emerald {
-  box-shadow: 0 0 24px rgba(52, 211, 153, 0.18);
-}
-.text-glow {
-  text-shadow: 0 0 18px rgba(52, 211, 153, 0.45);
+/* Tabular figures everywhere numbers change, so values don't jitter. */
+.font-mono {
+  font-feature-settings: "tnum" 1;
 }
 
 ::selection {
-  background: rgba(52, 211, 153, 0.3);
+  background: rgb(255 255 255 / 0.14);
 }
 
-/* Slim styled scrollbar */
+/* Focus: single hairline ring, no glow. */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--background), 0 0 0 2px #52525b;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #050810;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1c2941;
-  border-radius: 5px;
+  background: #27272a;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a3b5c;
+  background: #3f3f46;
+}
+
+/* Single restrained entrance; no staggered/springy motion. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-in-subtle {
+  animation: fade-in 0.35s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in-subtle {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
 }
