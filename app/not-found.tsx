@@ -14,10 +14,10 @@ export default async function NotFound() {
   await connection();
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-6 py-24">
-      <div className="animate-in-subtle">
+    <div className="flex min-h-[70vh] items-center justify-center px-5 lg:px-8">
+      <div className="animate-in-subtle w-full max-w-md rounded-xl border border-zinc-800/50 bg-zinc-900/40 p-8">
         <p className="font-mono text-xs text-muted-foreground">404</p>
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+        <h1 className="mt-3 text-lg font-semibold tracking-tight text-foreground">
           Route not found
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -25,10 +25,10 @@ export default async function NotFound() {
         </p>
         <Link
           href="/"
-          className="group mt-6 inline-flex items-center gap-2 text-xs font-medium text-foreground transition-colors hover:text-progress"
+          className="group mt-6 inline-flex items-center gap-2 rounded-md border border-zinc-800/50 px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-zinc-700 hover:bg-zinc-800/50"
         >
           <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
-          Back to roadmap
+          Back to dashboard
         </Link>
       </div>
     </div>

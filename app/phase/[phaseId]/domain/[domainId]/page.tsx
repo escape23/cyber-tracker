@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { SectionLabel } from "@/components/primitives";
+import { Panel, PanelHeader } from "@/components/primitives";
 import { cn } from "@/lib/utils";
 import {
   SY0701_DOMAINS,
@@ -57,7 +57,7 @@ export default function DomainPage({
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-6 py-16 sm:py-20">
+    <div className="mx-auto max-w-[1600px] px-5 py-8 lg:px-8">
       <div className="animate-in-subtle">
         <Breadcrumbs
           items={[
@@ -66,126 +66,138 @@ export default function DomainPage({
           ]}
         />
 
-        {/* Header */}
-        <header className="mt-8">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-muted-foreground">
-              {domain.code}
-            </span>
-            <span className="text-muted-foreground/30">·</span>
-            <span className="font-mono text-xs text-muted-foreground">
-              {domain.weight}% of exam
-            </span>
+        <header className="mt-5 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs text-muted-foreground">
+                {domain.code}
+              </span>
+              <span className="text-muted-foreground/30">·</span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {domain.weight}% of exam
+              </span>
+            </div>
+            <h1 className="mt-2 text-xl font-semibold tracking-tight text-foreground">
+              {domain.name}
+            </h1>
+            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              {domain.summary}
+            </p>
           </div>
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
-            {domain.name}
-          </h1>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            {domain.summary}
-          </p>
+
+          <button
+            type="button"
+            onClick={() =>
+              setChecklist((prevList) => ({
+                ...prevList,
+                [domain.id]: !prevList[domain.id],
+              }))
+            }
+            className={cn(
+              "inline-flex shrink-0 items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
+              done
+                ? "border-progress/40 bg-progress/10 text-progress"
+                : "border-zinc-800/50 bg-zinc-900/40 text-foreground hover:border-zinc-700 hover:bg-zinc-800/50"
+            )}
+          >
+            <span
+              className={cn(
+                "flex h-3.5 w-3.5 items-center justify-center rounded-full border",
+                done ? "border-progress bg-progress text-background" : "border-zinc-600"
+              )}
+            >
+              {done && <Check className="h-2 w-2" />}
+            </span>
+            {done ? "Completed" : "Mark complete"}
+          </button>
         </header>
 
-        {/* Completion toggle */}
-        <button
-          type="button"
-          onClick={() =>
-            setChecklist((prevList) => ({
-              ...prevList,
-              [domain.id]: !prevList[domain.id],
-            }))
-          }
-          className="mt-8 flex w-full items-center gap-3 rounded-lg border border-border/40 px-4 py-3 text-left transition-colors hover:bg-white/[0.02]"
-        >
-          <span
-            className={cn(
-              "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors",
-              done ? "border-progress bg-progress text-background" : "border-border"
-            )}
-          >
-            {done && <Check className="h-2.5 w-2.5" />}
-          </span>
-          <span
-            className={cn(
-              "text-sm",
-              done ? "text-muted-foreground" : "text-foreground"
-            )}
-          >
-            {done ? "Completed" : "Mark as complete"}
-          </span>
-        </button>
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          {/* Notes take the primary column — this is the working surface */}
+          <Panel className="lg:col-span-2">
+            <PanelHeader
+              title="Study notes"
+              action={
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {dirty ? "Unsaved" : justSaved ? "Saved" : "Local only"}
+                </span>
+              }
+            />
+            <div className="p-5">
+              <textarea
+                value={draft}
+                onChange={(e) => setDraftState(e.target.value)}
+                placeholder="Acronyms, gotchas, PBQ tricks, links…"
+                spellCheck={false}
+                className="min-h-[22rem] w-full resize-y rounded-lg border border-zinc-800/50 bg-zinc-950/40 p-4 font-mono text-[13px] leading-relaxed text-foreground placeholder:text-muted-foreground/50 focus-visible:border-zinc-700"
+              />
+              <div className="mt-3 flex items-center justify-between">
+                <span className="font-mono text-[11px] text-muted-foreground/60">
+                  {draft.length} chars
+                </span>
+                <button
+                  type="button"
+                  onClick={saveNotes}
+                  disabled={!dirty}
+                  className="rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-30"
+                >
+                  Save notes
+                </button>
+              </div>
+            </div>
+          </Panel>
 
-        {/* Key topics */}
-        <section className="mt-12">
-          <SectionLabel>Key topics</SectionLabel>
-          <ul className="mt-4 border-t border-border/40">
-            {domain.topics.map((topic) => (
-              <li
-                key={topic}
-                className="border-b border-border/40 py-3 text-sm text-muted-foreground"
-              >
-                {topic}
-              </li>
-            ))}
-          </ul>
-        </section>
+          {/* Supporting rail */}
+          <div className="space-y-4">
+            <Panel>
+              <PanelHeader title="Key topics" />
+              <ul className="divide-y divide-zinc-800/50">
+                {domain.topics.map((topic) => (
+                  <li
+                    key={topic}
+                    className="px-5 py-3 text-xs leading-relaxed text-muted-foreground"
+                  >
+                    {topic}
+                  </li>
+                ))}
+              </ul>
+            </Panel>
 
-        {/* Study notes */}
-        <section className="mt-12">
-          <div className="flex items-center justify-between">
-            <SectionLabel>Study notes</SectionLabel>
-            <span className="font-mono text-[11px] text-muted-foreground/60">
-              {dirty ? "Unsaved" : justSaved ? "Saved" : "Local only"}
-            </span>
+            <Panel>
+              <PanelHeader title="Navigate" />
+              <div className="divide-y divide-zinc-800/50">
+                {prev ? (
+                  <Link
+                    href={`/phase/0/domain/${prev.id}`}
+                    className="group flex items-center gap-2.5 px-5 py-3 transition-colors hover:bg-zinc-800/25"
+                  >
+                    <ArrowLeft className="h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform group-hover:-translate-x-0.5" />
+                    <span className="w-7 shrink-0 font-mono text-xs text-muted-foreground/60">
+                      {prev.code}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground transition-colors group-hover:text-foreground">
+                      {prev.name}
+                    </span>
+                  </Link>
+                ) : null}
+                {next ? (
+                  <Link
+                    href={`/phase/0/domain/${next.id}`}
+                    className="group flex items-center gap-2.5 px-5 py-3 transition-colors hover:bg-zinc-800/25"
+                  >
+                    <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5" />
+                    <span className="w-7 shrink-0 font-mono text-xs text-muted-foreground/60">
+                      {next.code}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground transition-colors group-hover:text-foreground">
+                      {next.name}
+                    </span>
+                  </Link>
+                ) : null}
+              </div>
+            </Panel>
           </div>
-
-          <textarea
-            value={draft}
-            onChange={(e) => setDraftState(e.target.value)}
-            placeholder="Acronyms, gotchas, PBQ tricks, links…"
-            spellCheck={false}
-            className="mt-4 min-h-56 w-full resize-y rounded-lg border border-border/40 bg-card/40 p-4 font-mono text-[13px] leading-relaxed text-foreground placeholder:text-muted-foreground/50 focus-visible:border-border"
-          />
-
-          <div className="mt-3 flex items-center justify-between">
-            <span className="font-mono text-[11px] text-muted-foreground/60">
-              {draft.length} chars
-            </span>
-            <button
-              type="button"
-              onClick={saveNotes}
-              disabled={!dirty}
-              className="rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-30"
-            >
-              Save notes
-            </button>
-          </div>
-        </section>
-
-        {/* Prev / next */}
-        <nav className="mt-12 flex items-center justify-between gap-4 border-t border-border/40 pt-6">
-          {prev ? (
-            <Link
-              href={`/phase/0/domain/${prev.id}`}
-              className="group flex min-w-0 items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="h-3 w-3 shrink-0 transition-transform group-hover:-translate-x-0.5" />
-              <span className="truncate">{prev.name}</span>
-            </Link>
-          ) : (
-            <span />
-          )}
-          {next ? (
-            <Link
-              href={`/phase/0/domain/${next.id}`}
-              className="group flex min-w-0 items-center gap-2 text-right text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <span className="truncate">{next.name}</span>
-              <ArrowRight className="h-3 w-3 shrink-0 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          ) : (
-            <span />
-          )}
-        </nav>
+        </div>
       </div>
     </div>
   );

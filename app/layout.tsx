@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { Sidebar, MobileNav } from "@/components/sidebar";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,7 +30,16 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">
+        {/* Persistent global navigation: fixed rail on lg+, top bar below. */}
+        <Sidebar />
+        <MobileNav />
+
+        {/* Offset matches the sidebar width so content never sits beneath it. */}
+        <div className="lg:pl-60">
+          <main className="min-h-screen">{children}</main>
+        </div>
+      </body>
     </html>
   );
 }

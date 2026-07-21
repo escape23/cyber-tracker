@@ -1,7 +1,56 @@
 import { cn } from "@/lib/utils";
 import type { PhaseStatus } from "@/lib/roadmap";
 
-/** Small uppercase section heading. Structure without visual weight. */
+/**
+ * Panel — the base container for every grouped block of data.
+ * Subtle lift off the background plus a hairline border, so regions read as
+ * distinct surfaces without heavy chrome.
+ */
+export function Panel({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-xl border border-zinc-800/50 bg-zinc-900/40",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Panel title row, with optional right-aligned action/metric. */
+export function PanelHeader({
+  title,
+  action,
+  className,
+}: {
+  title: React.ReactNode;
+  action?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-between gap-3 border-b border-zinc-800/50 px-5 py-3.5",
+        className
+      )}
+    >
+      <h2 className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+        {title}
+      </h2>
+      {action}
+    </div>
+  );
+}
+
+/** Small uppercase section heading for use outside panels. */
 export function SectionLabel({
   children,
   className,
@@ -39,7 +88,7 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={100}
       className={cn(
-        "h-1 w-full overflow-hidden rounded-full bg-border/60",
+        "h-1 w-full overflow-hidden rounded-full bg-zinc-800",
         className
       )}
     >
@@ -65,5 +114,25 @@ export function StatusChip({ status }: { status: PhaseStatus }) {
     <span className="text-[11px] font-medium text-muted-foreground/70">
       {status === "pending" ? "Pending" : "Locked"}
     </span>
+  );
+}
+
+/** Label + monospaced value, used across stat blocks. */
+export function Metric({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: string;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <p className="font-mono text-lg font-medium tracking-tight text-foreground">
+        {value}
+      </p>
+      <p className="mt-0.5 text-xs text-muted-foreground">{label}</p>
+    </div>
   );
 }
